@@ -32,13 +32,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       },
     );
 
-    _timerForBotAction = Timer.periodic(const Duration(seconds: 4), (_) {
-      add(MainEvent$BotAction());
-    });
-
-    Timer.periodic(const Duration(seconds: 1), (_) {
-      add(MainEvent$CheckExpiration());
-    });
+    add(MainEvent$ResumeTimer());
 
     l.i('Bloc yuklandi. Botni ishga tushirildi!');
   }
@@ -47,11 +41,16 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   final Random _random = Random();
   final String _botUserId = 'bot-123';
   Timer? _timerForBotAction;
+  Timer? _timerForCheckExpiration;
 
   void _pause(MainEvent$PauseTimer event, Emitter<MainState> emit) {
     if (_timerForBotAction != null) {
       _timerForBotAction?.cancel();
       _timerForBotAction = null;
+    }
+    if (_timerForCheckExpiration != null) {
+      _timerForCheckExpiration?.cancel();
+      _timerForCheckExpiration = null;
     }
 
     l.i('Botni vaqtinchalik pause qilindi!');
@@ -60,6 +59,10 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   void _resume(MainEvent$ResumeTimer event, Emitter<MainState> emit) {
     _timerForBotAction = Timer.periodic(const Duration(seconds: 4), (_) {
       add(MainEvent$BotAction());
+    });
+
+    _timerForCheckExpiration = Timer.periodic(const Duration(seconds: 1), (_) {
+      add(MainEvent$CheckExpiration());
     });
 
     l.i('Botni yana ishga tushirildi!');

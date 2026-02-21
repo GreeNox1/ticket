@@ -38,7 +38,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       context.read<MainBloc>().add(MainEvent$PauseTimer());
     } else if (state == AppLifecycleState.resumed) {
       debugPrint("Resume");
-      context.read<MainBloc>().add(MainEvent$CheckExpiration());
+      context.read<MainBloc>().add(MainEvent$ResumeTimer());
     }
   }
 
